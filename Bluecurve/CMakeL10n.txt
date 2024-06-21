@@ -1,0 +1,12 @@
+##### create translation templates ##############
+
+tde_l10n_create_template(
+    CATALOG "messages/twin-style-bluecurve"
+    SOURCES .
+    X-POT ${CMAKE_SOURCE_DIR}/../../../core/tde-i18n/template/messages/tdebase/twin_clients.pot
+)
+
+tde_l10n_create_template(
+    CATALOG "desktop_files/twin-style-bluecurve-desktops"
+    SOURCES *.desktop
+)

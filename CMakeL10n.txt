@@ -1,0 +1,23 @@
+#########################################
+#                                       #
+# Improvements and feedback are welcome #
+#                                       #
+#  This file is released under GPL >=2  #
+#                                       #
+#########################################
+
+
+##### set project version ########################
+
+include( TDEVersion )
+cmake_minimum_required( VERSION ${TDE_CMAKE_MINIMUM_VERSION} )
+
+
+##### include our cmake modules #########
+
+include( TDEL10n )
+
+
+##### create translation templates ######
+
+tde_l10n_auto_add_subdirectories( )
