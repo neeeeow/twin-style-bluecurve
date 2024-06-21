@@ -9,8 +9,8 @@
 
 #undef QT_NO_COMPAT
 #include "bluecurveclient.h"
-#include <qmetaobject.h>
-#include <qapplication.h>
+#include <tqmetaobject.h>
+#include <tqapplication.h>
 
 #include <private/qucomextra_p.h>
 #if !defined(Q_MOC_OUTPUT_REVISION) || (Q_MOC_OUTPUT_REVISION != 26)
@@ -30,16 +30,16 @@ static QMetaObjectCleanUp cleanUp_BlueCurve__BlueCurveClient( "BlueCurve::BlueCu
 #ifndef QT_NO_TRANSLATION
 QString BlueCurve::BlueCurveClient::tr( const char *s, const char *c )
 {
-    if ( qApp )
-	return qApp->translate( "BlueCurve::BlueCurveClient", s, c, QApplication::DefaultCodec );
+    if ( tqApp )
+	return tqApp->translate( "BlueCurve::BlueCurveClient", s, c, QApplication::DefaultCodec );
     else
 	return QString::fromLatin1( s );
 }
 #ifndef QT_NO_TRANSLATION_UTF8
 QString BlueCurve::BlueCurveClient::trUtf8( const char *s, const char *c )
 {
-    if ( qApp )
-	return qApp->translate( "BlueCurve::BlueCurveClient", s, c, QApplication::UnicodeUTF8 );
+    if ( tqApp )
+	return tqApp->translate( "BlueCurve::BlueCurveClient", s, c, QApplication::UnicodeUTF8 );
     else
 	return QString::fromUtf8( s );
 }
@@ -73,35 +73,35 @@ QMetaObject* BlueCurve::BlueCurveClient::staticMetaObject()
     return metaObj;
 }
 
-void* BlueCurve::BlueCurveClient::qt_cast( const char* clname )
+void* BlueCurve::BlueCurveClient::tqt_cast( const char* clname )
 {
     if ( !qstrcmp( clname, "BlueCurve::BlueCurveClient" ) )
 	return this;
-    return KDecoration::qt_cast( clname );
+    return KDecoration::tqt_cast( clname );
 }
 
-bool BlueCurve::BlueCurveClient::qt_invoke( int _id, QUObject* _o )
+bool BlueCurve::BlueCurveClient::tqt_invoke( int _id, QUObject* _o )
 {
     switch ( _id - staticMetaObject()->slotOffset() ) {
     case 0: slotMaximize(); break;
     case 1: menuButtonPressed(); break;
     case 2: menuButtonReleased(); break;
     default:
-	return KDecoration::qt_invoke( _id, _o );
+	return KDecoration::tqt_invoke( _id, _o );
     }
     return TRUE;
 }
 
-bool BlueCurve::BlueCurveClient::qt_emit( int _id, QUObject* _o )
+bool BlueCurve::BlueCurveClient::tqt_emit( int _id, QUObject* _o )
 {
-    return KDecoration::qt_emit(_id,_o);
+    return KDecoration::tqt_emit(_id,_o);
 }
 #ifndef QT_NO_PROPERTIES
 
-bool BlueCurve::BlueCurveClient::qt_property( int id, int f, QVariant* v)
+bool BlueCurve::BlueCurveClient::tqt_property( int id, int f, QVariant* v)
 {
-    return KDecoration::qt_property( id, f, v);
+    return KDecoration::tqt_property( id, f, v);
 }
 
-bool BlueCurve::BlueCurveClient::qt_static_property( QObject* , int , int , QVariant* ){ return FALSE; }
+bool BlueCurve::BlueCurveClient::tqt_static_property( QObject* , int , int , QVariant* ){ return FALSE; }
 #endif // QT_NO_PROPERTIES

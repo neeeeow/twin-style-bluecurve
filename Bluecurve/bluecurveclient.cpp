@@ -8,6 +8,8 @@
  *	Karol Szwed <gallium@kde.org>
  *  Than Ngo <than@redhat.com>
  *
+ *  Ported to TDE by neeeeow <https://github.com/neeeeow/twin-style-bluecurve>
+ *
  *	Draws mini titlebars for tool windows.
  *	Many features are now customizable.
  */
@@ -20,13 +22,13 @@
 #include <kimageeffect.h>
 #include <kdrawutil.h>
 #include <klocale.h>
-#include <qlayout.h>
-#include <qdrawutil.h>
-#include <qbitmap.h>
-#include <qimage.h>
-#include <qtooltip.h>
-#include <qapplication.h>
-#include <qlabel.h>
+#include <tqlayout.h>
+#include <tqdrawutil.h>
+#include <tqbitmap.h>
+#include <tqimage.h>
+#include <tqtooltip.h>
+#include <tqapplication.h>
+#include <tqlabel.h>
 #include <kdebug.h>
 
 
@@ -58,10 +60,10 @@ KPixmap* btnDownPix;
 KPixmap* ibtnUpPix;
 KPixmap* ibtnDownPix;
 
-QPixmap* bottomLeftPix;
-QPixmap* bottomRightPix;
-QPixmap* abottomLeftPix;
-QPixmap* abottomRightPix;
+TQPixmap* bottomLeftPix;
+TQPixmap* bottomRightPix;
+TQPixmap* abottomLeftPix;
+TQPixmap* abottomRightPix;
 
 BlueCurveHandler* clientHandler;
 
@@ -170,25 +172,25 @@ void BlueCurveHandler::createPixmaps()
 	// Make the titlebar stipple optional
 	if (showTitleBarStipple)
 	{
-		QPainter p;
-		QPainter maskPainter;
+		TQPainter p;
+		TQPainter maskPainter;
 		int x, y;
 		titlePix = new KPixmap();
 		titlePix->resize(132, normalTitleHeight+2);
-		QBitmap mask(132, normalTitleHeight+2);
+		TQBitmap mask(132, normalTitleHeight+2);
 
-		mask.fill(Qt::color0);
+		mask.fill(TQt::color0);
 
 		p.begin(titlePix);
 		maskPainter.begin(&mask);
-		maskPainter.setPen(Qt::color1);
+		maskPainter.setPen(TQt::color1);
 
-		QColor lighterColor(options()->color(ColorTitleBar, true).light (150));
+		TQColor lighterColor(options()->color(ColorTitleBar, true).light (150));
 		int h, s, v;
 		lighterColor.hsv (&h, &s, &v);
 		s /= 2;
 		s = (s > 255) ? 255 : (int) s;
-		QColor satColor(h, s, v, QColor::Hsv);
+		TQColor satColor(h, s, v, TQColor::Hsv);
 
 		KPixmapEffect::gradient(*titlePix,
 				satColor,
@@ -212,8 +214,8 @@ void BlueCurveHandler::createPixmaps()
 	iUpperGradient = NULL;
 
 	// Set the sticky pin pixmaps;
-	QColorGroup g;
-	QPainter p;
+	TQColorGroup g;
+	TQPainter p;
 
 	// Active pins
 	g = options()->colorGroup( ColorButtonBg, true );
@@ -224,7 +226,7 @@ void BlueCurveHandler::createPixmaps()
 	kColorBitmaps( &p, g, 0, 0, BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, true, pinup_white_bits,
 		pinup_gray_bits, NULL, NULL, pinup_dgray_bits, NULL );
 	p.end();
-	pinUpPix->setMask( QBitmap(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, pinup_mask_bits, true) );
+	pinUpPix->setMask( TQBitmap(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, pinup_mask_bits, true) );
 
 	pinDownPix = new KPixmap();
 	pinDownPix->resize(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE);
@@ -232,7 +234,7 @@ void BlueCurveHandler::createPixmaps()
 	kColorBitmaps( &p, g, 0, 0, BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, true, pindown_white_bits,
 		pindown_gray_bits, NULL, NULL, pindown_dgray_bits, NULL );
 	p.end();
-	pinDownPix->setMask( QBitmap(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, pindown_mask_bits, true) );
+	pinDownPix->setMask( TQBitmap(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, pindown_mask_bits, true) );
 
 	// Inactive pins
 	g = options()->colorGroup( ColorButtonBg, false );
@@ -243,7 +245,7 @@ void BlueCurveHandler::createPixmaps()
 	kColorBitmaps( &p, g, 0, 0, BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, true, pinup_white_bits,
 		pinup_gray_bits, NULL, NULL, pinup_dgray_bits, NULL );
 	p.end();
-	ipinUpPix->setMask( QBitmap(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, pinup_mask_bits, true) );
+	ipinUpPix->setMask( TQBitmap(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, pinup_mask_bits, true) );
 
 	ipinDownPix = new KPixmap();
 	ipinDownPix->resize(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE);
@@ -251,7 +253,7 @@ void BlueCurveHandler::createPixmaps()
 	kColorBitmaps( &p, g, 0, 0, BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, true, pindown_white_bits,
 		pindown_gray_bits, NULL, NULL, pindown_dgray_bits, NULL );
 	p.end();
-	ipinDownPix->setMask( QBitmap(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, pindown_mask_bits, true) );
+	ipinDownPix->setMask( TQBitmap(BASE_BUTTON_SIZE, BASE_BUTTON_SIZE, pindown_mask_bits, true) );
 
 	// Create a title buffer for flicker-free painting
 	titleBuffer = new KPixmap();
@@ -278,20 +280,20 @@ void BlueCurveHandler::createPixmaps()
 	drawButtonBackground( ibtnUpPix, g, false, false );
 	drawButtonBackground( ibtnDownPix, g, true, false );
 
-	QImage bottomleft(bottom_left_xpm);
-	QImage bottomright(bottom_right_xpm);
-	QImage abottomleft(bottom_left_xpm);
-	QImage abottomright(bottom_right_xpm);
+	TQImage bottomleft(bottom_left_xpm);
+	TQImage bottomright(bottom_right_xpm);
+	TQImage abottomleft(bottom_left_xpm);
+	TQImage abottomright(bottom_right_xpm);
 
 	recolor(bottomleft, options()->color( ColorTitleBar, false ).light(95));
 	recolor(bottomright, options()->color( ColorTitleBar, false ).light(95));
 	recolor(abottomleft, options()->color( ColorTitleBar, true ).light(135));
 	recolor(abottomright, options()->color( ColorTitleBar, true ).light(135));
 
-	bottomLeftPix 	= new QPixmap();
-	bottomRightPix	= new QPixmap();
-	abottomLeftPix	= new QPixmap();	
-	abottomRightPix	= new QPixmap();
+	bottomLeftPix 	= new TQPixmap();
+	bottomRightPix	= new TQPixmap();
+	abottomLeftPix	= new TQPixmap();	
+	abottomRightPix	= new TQPixmap();
 	bottomLeftPix->convertFromImage(bottomleft);
 	bottomRightPix->convertFromImage(bottomright);
 	abottomLeftPix->convertFromImage(abottomleft);
@@ -301,25 +303,25 @@ void BlueCurveHandler::createPixmaps()
 // This is the recoloring method from the Keramik widget style,
 // copyright (c) 2002 Malte Starostik <malte@kde.org>.
 // Modified to work with 8bpp images.
-void BlueCurveHandler::recolor( QImage &img, const QColor& color )
+void BlueCurveHandler::recolor( TQImage &img, const TQColor& color )
 {
 	int hue = -1, sat = 0, val = 228;
 	if ( color.isValid() )
 		color.hsv( &hue, &sat, &val );
 	register int pixels = (img.depth() > 8 ? img.width() * img.height() : img.numColors());
-	register Q_UINT32* data = ( img.depth() > 8 ? reinterpret_cast< Q_UINT32* >( img.bits() ) :
-		reinterpret_cast< Q_UINT32* >( img.colorTable() ) );
+	register TQ_UINT32* data = ( img.depth() > 8 ? reinterpret_cast< TQ_UINT32* >( img.bits() ) :
+		reinterpret_cast< TQ_UINT32* >( img.colorTable() ) );
 	
 	for ( int i = 0; i < pixels; i++ )
 	{
-		QColor c( *data );
+		TQColor c( *data );
 		int h, s, v;
 		c.hsv( &h, &s, &v );
 		h = hue;
 		s = sat;
 		v = v * val / 145;
-		c.setHsv( h, QMIN( s, 255 ), QMIN( v, 255 ) );
-		*data = ( c.rgb() & RGB_MASK ) | ( *data & ~RGB_MASK );
+		c.setHsv( h, TQMIN( s, 255 ), TQMIN( v, 255 ) );
+		*data = ( c.rgb() & TQT_RGB_MASK ) | ( *data & ~TQT_RGB_MASK );
 		data++;
 	}
 }
@@ -360,24 +362,24 @@ void BlueCurveHandler::freePixmaps()
 
 
 void BlueCurveHandler::drawButtonBackground(KPixmap *pix, 
-		const QColorGroup &g, bool sunken, bool active)
+		const TQColorGroup &g, bool sunken, bool active)
 {
-	QPainter p;
+	TQPainter p;
 
-	bool highcolor = useGradients && (QPixmap::defaultDepth() > 8);
-	QColor c = g.background();
+	bool highcolor = useGradients && (TQPixmap::defaultDepth() > 8);
+	TQColor c = g.background();
 
 	// Fill the background with a gradient if possible
 	if (highcolor)
 	{
 		if (active)
 		{
-			KPixmapEffect::gradient(*pix, c, Qt::white,
+			KPixmapEffect::gradient(*pix, c, TQt::white,
 				KPixmapEffect::DiagonalGradient);
 		} else
 		{
-			QColor inactiveTitleColor1(options()->color(ColorTitleBar, false));
-			QColor inactiveTitleColor2(options()->color(ColorTitleBlend, false));
+			TQColor inactiveTitleColor1(options()->color(ColorTitleBar, false));
+			TQColor inactiveTitleColor2(options()->color(ColorTitleBlend, false));
 			KPixmapEffect::gradient(*pix,
 				inactiveTitleColor2,
 				inactiveTitleColor1,
@@ -393,11 +395,11 @@ void BlueCurveHandler::drawButtonBackground(KPixmap *pix,
 
 BlueCurveButton::BlueCurveButton(BlueCurveClient *parent, const char *name,
 		bool largeButton, int bpos, bool isOnAllDesktopsButton,
-		const unsigned char *bitmap, const QString& tip, const int realizeBtns)
-		: QButton(parent->widget(), name)
+		const unsigned char *bitmap, const TQString& tip, const int realizeBtns)
+		: TQButton(parent->widget(), name)
 {
 	realizeButtons = realizeBtns;
-	setBackgroundMode( QWidget::NoBackground );
+	setBackgroundMode( TQWidget::NoBackground );
 	setToggleButton( isOnAllDesktopsButton );
 
 	isMouseOver = false;
@@ -413,7 +415,7 @@ BlueCurveButton::BlueCurveButton(BlueCurveClient *parent, const char *name,
 	if (bitmap)
 		setBitmap(bitmap);
 
-	QToolTip::add(this, tip);
+	TQToolTip::add(this, tip);
 }
 
 
@@ -424,19 +426,19 @@ BlueCurveButton::~BlueCurveButton()
 }
 
 
-QSize BlueCurveButton::sizeHint() const
+TQSize BlueCurveButton::sizeHint() const
 {
-	return( QSize(BASE_BUTTON_SIZE,BASE_BUTTON_SIZE ));
+	return( TQSize(BASE_BUTTON_SIZE,BASE_BUTTON_SIZE ));
 }
 
 
-void BlueCurveButton::resizeEvent( QResizeEvent* e)
+void BlueCurveButton::resizeEvent( TQResizeEvent* e)
 {
 	doShape();
-	QButton::resizeEvent(e);
+	TQButton::resizeEvent(e);
 }
 
-void BlueCurveButton::showEvent(QShowEvent *)
+void BlueCurveButton::showEvent(TQShowEvent *)
 {
 	doShape();
 }
@@ -448,14 +450,14 @@ void BlueCurveButton::doShape()
 	int h  = rect().height();
 	int r = BUTTON_DIAM / 2;
 	int dm = BUTTON_DIAM;
-	QBitmap mask(size(), true);
+	TQBitmap mask(size(), true);
 
-	QPainter p3(&mask);
-	QBrush blackbr(Qt::color1);
+	TQPainter p3(&mask);
+	TQBrush blackbr(TQt::color1);
 	p3.fillRect(0,0,w,h,blackbr);
 
-	p3.setPen(Qt::color1);
-	p3.setBrush(Qt::color1);
+	p3.setPen(TQt::color1);
+	p3.setBrush(TQt::color1);
 	if (pos == ButtonLeft) {
 		p3.eraseRect(0, -TOP_GRABBAR_WIDTH, r, r);
 		p3.drawPie(0, -TOP_GRABBAR_WIDTH, dm-1, dm-1, 90*16, 90*16);
@@ -475,13 +477,13 @@ void BlueCurveButton::setBitmap(const unsigned char *bitmap)
 	if (deco)
 		delete deco;
 
-	deco = new QBitmap(14, 14, bitmap, true);
+	deco = new TQBitmap(14, 14, bitmap, true);
 	deco->setMask( *deco );
 	repaint( false );
 }
 
 
-void BlueCurveButton::drawButton(QPainter *p)
+void BlueCurveButton::drawButton(TQPainter *p)
 {
 	if (!BlueCurve_initialized)
 		return;
@@ -516,11 +518,11 @@ void BlueCurveButton::drawButton(QPainter *p)
 	if ( deco )
 	{
 		// Select the appropriate button decoration color
-		bool darkDeco = qGray( KDecoration::options()->color(
+		bool darkDeco = tqGray( KDecoration::options()->color(
 				KDecoration::ColorButtonBg,
 				client->isActive()).rgb() ) > 127;
 
-		QColor bgc = KDecoration::options()->color(KDecoration::ColorTitleBar, client->isActive());
+		TQColor bgc = KDecoration::options()->color(KDecoration::ColorTitleBar, client->isActive());
 		if (isMouseOver)
 			p->setPen( darkDeco ? bgc.dark(120) : bgc.light(120) );
 		else
@@ -541,7 +543,7 @@ void BlueCurveButton::drawButton(QPainter *p)
 				btnpix = isOn() ? *ipinDownPix : *ipinUpPix;
 		} else
 		{
-			btnpix = client->icon().pixmap( QIconSet::Small, QIconSet::Normal );
+			btnpix = client->icon().pixmap( TQIconSet::Small, TQIconSet::Normal );
         }
       
 		// Intensify the image if required
@@ -556,7 +558,7 @@ void BlueCurveButton::drawButton(QPainter *p)
 		p->drawPixmap( 0, 0, btnpix );
 	}
 
-	QColorGroup g;
+	TQColorGroup g;
 	p->setPen(g.dark());
 }
 
@@ -569,37 +571,37 @@ void BlueCurveButton::turnOn( bool isOn )
 }
 
 
-void BlueCurveButton::enterEvent(QEvent *e) 
+void BlueCurveButton::enterEvent(TQEvent *e) 
 { 
 	isMouseOver=true;
 	repaint(false); 
-	QButton::enterEvent(e);
+	TQButton::enterEvent(e);
 }
 
 
-void BlueCurveButton::leaveEvent(QEvent *e)
+void BlueCurveButton::leaveEvent(TQEvent *e)
 { 
 	isMouseOver=false;
 	repaint(false); 
-	QButton::leaveEvent(e);
+	TQButton::leaveEvent(e);
 }
 
 
-void BlueCurveButton::mousePressEvent( QMouseEvent* e )
+void BlueCurveButton::mousePressEvent( TQMouseEvent* e )
 {
 	last_button = e->button();
-	QMouseEvent me( e->type(), e->pos(), e->globalPos(),
+	TQMouseEvent me( e->type(), e->pos(), e->globalPos(),
 			(e->button()&realizeButtons)?LeftButton:NoButton, e->state() );
-	QButton::mousePressEvent( &me );
+	TQButton::mousePressEvent( &me );
 }
 
 
-void BlueCurveButton::mouseReleaseEvent( QMouseEvent* e )
+void BlueCurveButton::mouseReleaseEvent( TQMouseEvent* e )
 {
 	last_button = e->button();
-	QMouseEvent me( e->type(), e->pos(), e->globalPos(),
+	TQMouseEvent me( e->type(), e->pos(), e->globalPos(),
 			(e->button()&realizeButtons)?LeftButton:NoButton, e->state() );
-	QButton::mouseReleaseEvent( &me );
+	TQButton::mouseReleaseEvent( &me );
 }
 
 
@@ -610,10 +612,10 @@ void BlueCurveButton::reset()
 }
 
 
-void BlueCurveButton::setTipText(const QString &tip) {
+void BlueCurveButton::setTipText(const TQString &tip) {
 	if ( KDecoration::options()->showTooltips() ) {
-		QToolTip::remove(this );
-		QToolTip::add(this, tip );
+		TQToolTip::remove(this );
+		TQToolTip::add(this, tip );
 	}
 }
 
@@ -631,7 +633,7 @@ void BlueCurveClient::init()
 	widget()->installEventFilter( this );
 
 	// No flicker thanks
-	widget()->setBackgroundMode( QWidget::NoBackground );
+	widget()->setBackgroundMode( TQWidget::NoBackground );
 
 	// Set button pointers to NULL so we can track things
 	for(int i=0; i < BlueCurveClient::BtnCount; i++)
@@ -647,20 +649,20 @@ void BlueCurveClient::init()
 	}
 
 	// Pack the windowWrapper() window within a grid
-	QVBoxLayout* g = new QVBoxLayout(widget());
-	g->setResizeMode(QLayout::FreeResize);
+	TQVBoxLayout* g = new TQVBoxLayout(widget());
+	g->setResizeMode(TQLayout::FreeResize);
 	g->addSpacing(TOP_GRABBAR_WIDTH);       // Top grab bar
 
 	// Pack the titlebar HBox with items
-	hb = new QHBoxLayout();
+	hb = new TQHBoxLayout();
 	hb->setSpacing(0);
 	hb->setMargin(0);
-	hb->setResizeMode( QLayout::FreeResize );
+	hb->setResizeMode( TQLayout::FreeResize );
 
 	hb->addSpacing(2);
 	addClientButtons( options()->titleButtonsLeft(), true );
-	titlebar = new QSpacerItem( 10, titleHeight,
-		QSizePolicy::Expanding, QSizePolicy::Minimum );
+	titlebar = new TQSpacerItem( 10, titleHeight,
+		TQSizePolicy::Expanding, TQSizePolicy::Minimum );
 	hb->addItem(titlebar);
 
 	//hb->addSpacing(2);
@@ -671,12 +673,12 @@ void BlueCurveClient::init()
 	g->addSpacing(1); // line under titlebar
 
 	// Add the middle section
-	hb = new QHBoxLayout();
+	hb = new TQHBoxLayout();
 	hb->addSpacing(BORDER_WIDTH);
 	if (isPreview())
-		hb->addWidget(new QLabel( i18n( "<center><b>Bluecurve preview</b></center>" ), widget()));
+		hb->addWidget(new TQLabel( i18n( "<center><b>Bluecurve preview</b></center>" ), widget()));
 	else
-		hb->addWidget(new QLabel("", widget()));
+		hb->addWidget(new TQLabel("", widget()));
 	hb->addSpacing(BORDER_WIDTH);
 	g->addLayout( hb );
 
@@ -695,7 +697,7 @@ bool BlueCurveClient::isTool() const
 }
 
 
-void BlueCurveClient::addClientButtons( const QString& s, bool isLeft )
+void BlueCurveClient::addClientButtons( const TQString& s, bool isLeft )
 {
 	int pos;
 	// Make sure we place the spacing between the buttons
@@ -870,7 +872,7 @@ void BlueCurveClient::slotMaximize()
 }
 
 
-void BlueCurveClient::resizeEvent( QResizeEvent* e)
+void BlueCurveClient::resizeEvent( TQResizeEvent* e)
 {
 	doShape();
 	calcHiddenButtons();
@@ -882,22 +884,22 @@ void BlueCurveClient::resizeEvent( QResizeEvent* e)
 		int dy = 0;
 
 		if ( e->oldSize().width() != width() )
-			dx = 32 + QABS( e->oldSize().width() -  width() );
+			dx = 32 + TQABS( e->oldSize().width() -  width() );
 
 		if ( e->oldSize().height() != height() )
-			dy = 8 + QABS( e->oldSize().height() -  height() );
+			dy = 8 + TQABS( e->oldSize().height() -  height() );
 
 		if ( dy )
 			widget()->update( 0, height() - dy + 1, width(), dy );
 		if ( dx )
 		{
 			widget()->update( width() - dx + 1, 0, dx, height() );
-			widget()->update( QRect( QPoint(4,4), titlebar->geometry().bottomLeft() - QPoint(1,0) ) );
-			widget()->update( QRect( titlebar->geometry().topRight(), QPoint(width() - 4,
+			widget()->update( TQRect( TQPoint(4,4), titlebar->geometry().bottomLeft() - TQPoint(1,0) ) );
+			widget()->update( TQRect( titlebar->geometry().topRight(), TQPoint(width() - 4,
 				titlebar->geometry().bottom()) ) );
 			// Titlebar needs no paint event
 			// widget()->repaint(titlebar->geometry(), false);
-			QApplication::postEvent( widget(), new QPaintEvent(titlebar->geometry(),FALSE) );
+			TQApplication::postEvent( widget(), new TQPaintEvent(titlebar->geometry(),FALSE) );
 		}
 	}
 }
@@ -909,19 +911,19 @@ void BlueCurveClient::captionChange()
 }
 
 
-void BlueCurveClient::paintEvent( QPaintEvent* )
+void BlueCurveClient::paintEvent( TQPaintEvent* )
 {
 	if (!BlueCurve_initialized)
 		return;
 
-	QColorGroup g;
+	TQColorGroup g;
 
 	bool drawLeftDivider = true; 
 	bool drawRightDivider = true; 
 
 	// Obtain widget bounds.
-	QRect r(widget()->rect());
-	QPainter p(widget());
+	TQRect r(widget()->rect());
+	TQPainter p(widget());
 
 	int x = r.x();
 	int y = r.y();
@@ -937,7 +939,7 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 	r = titlebar->geometry();
 	//int rightOffset = r.x()+r.width()+1;
 
-	QColor c2 = options()->color(ColorFrame, isActive() );
+	TQColor c2 = options()->color(ColorFrame, isActive() );
 	// Fill with frame color behind RHS buttons
 	///  p.fillRect( x, y+2, x2, titleHeight+1, c2);
 
@@ -951,20 +953,20 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 	r = titlebar->geometry();
 
 	// Obtain titlebar blend colours
-	QColor c1 = options()->color(ColorTitleBar, isActive() );
+	TQColor c1 = options()->color(ColorTitleBar, isActive() );
 
-	QPainter p2( titleBuffer, this );
-	QColor activeTitleColor1(options()->color(ColorTitleBar,      true));
-	QColor activeTitleColor2(options()->color(ColorTitleBlend,    true));
+	TQPainter p2( titleBuffer, this );
+	TQColor activeTitleColor1(options()->color(ColorTitleBar,      true));
+	TQColor activeTitleColor2(options()->color(ColorTitleBlend,    true));
 
-	QColor inactiveTitleColor1(options()->color(ColorTitleBar,    false));
-	QColor inactiveTitleColor2(options()->color(ColorTitleBlend,  false));
-	bool highcolor = useGradients && (QPixmap::defaultDepth() > 8);
+	TQColor inactiveTitleColor1(options()->color(ColorTitleBar,    false));
+	TQColor inactiveTitleColor2(options()->color(ColorTitleBlend,  false));
+	bool highcolor = useGradients && (TQPixmap::defaultDepth() > 8);
 
 	if (highcolor)
 	{
-		static QSize oldsize(0,0);
-		QSize titleBufferSize(w, titleHeight + TOP_GRABBAR_WIDTH);
+		static TQSize oldsize(0,0);
+		TQSize titleBufferSize(w, titleHeight + TOP_GRABBAR_WIDTH);
 		if (oldsize != titleBufferSize)
 		{
 			oldsize = titleBufferSize;
@@ -1008,7 +1010,7 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 	else
 		p2.fillRect(0, TOP_GRABBAR_WIDTH, w, titleHeight, c1);
 
-	QFont fnt = options()->font(true, true);
+	TQFont fnt = options()->font(true, true);
 
 	if ( isTool() )
 		fnt.setPointSize( fnt.pointSize()-2 );  // Shrink font by 2pt
@@ -1018,7 +1020,7 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 	// Draw the titlebar stipple if active and available
 	if (isActive() && titlePix)
 	{
-		QFontMetrics fm(fnt);
+		TQFontMetrics fm(fnt);
 		int captionWidth = fm.width(caption()) + 1;
 		p2.drawTiledPixmap( r.x() + 2 + 2 + captionWidth, TOP_GRABBAR_WIDTH,
 			r.width() - 2 - 4 - captionWidth, 
@@ -1039,7 +1041,7 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 		AlignLeft | AlignVCenter, caption() );
 
 	// Main Title Bar background area
-	p2.setPen(Qt::white);
+	p2.setPen(TQt::white);
 	p2.drawLine(x + 1, y + 1, x2 - 1, y + 1);
 	// This is kind of broken...
 	// We fill in the inner part of the circle here.  This is dependent on BUTTON_DIAM
@@ -1052,7 +1054,7 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 
 	if (isActive())
 	{
-		QColor lighterColor (options()->color(ColorTitleBar, true).light (150));
+		TQColor lighterColor (options()->color(ColorTitleBar, true).light (150));
 		p2.setPen (lighterColor);
 		p2.drawLine (r.x(), 2, r.x() + r.width(), 2);
 		int h, s, v;
@@ -1060,12 +1062,12 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 		s /= 2;
 		s = (s > 255) ? 255 : (int) s;
 
-		QColor satColor(h, s, v, QColor::Hsv);
+		TQColor satColor(h, s, v, TQColor::Hsv);
 		p2.setPen (satColor);
 		p2.drawLine (r.x(), 1, r.x() + r.width() - 2, 1);
 	}
 
-	p2.setPen(Qt::white);
+	p2.setPen(TQt::white);
 	if (isActive())
 	{
 		for (int i = 0; i < BtnCount; i ++)
@@ -1081,8 +1083,8 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 					drawLeftDivider = false;
 				continue;
 			}
-			QRect buttonSize = button[i]->geometry ();
-			p2.setPen(Qt::white);
+			TQRect buttonSize = button[i]->geometry ();
+			p2.setPen(TQt::white);
 			p2.drawLine (buttonSize.x() - 1, TOP_GRABBAR_WIDTH,
 			buttonSize.x() - 1, TOP_GRABBAR_WIDTH + titleHeight);
 			if (button[i]->pos == ButtonRight)
@@ -1121,7 +1123,7 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 	}
 
 	// Black outer line
-	p2.setPen(Qt::black);
+	p2.setPen(TQt::black);
 	p2.drawRect(0,0,w,h);
 	p2.drawArc(x, y, BUTTON_DIAM, BUTTON_DIAM, 90*16, 90*16);
 	p2.drawArc(x + w - BUTTON_DIAM , y, BUTTON_DIAM, BUTTON_DIAM, 0*16, 90*16);
@@ -1137,13 +1139,13 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 		// by drawing 1 pixel below and above the frame part
 		x + 1, y + (sideStart - 1),
 		BORDER_WIDTH - 1, h - (sideStart + 2),
-		g, false, 1, &g.brush(QColorGroup::Background));
+		g, false, 1, &g.brush(TQColorGroup::Background));
 
 	// Right Side
 	qDrawShadePanel(&p,
 		x2 - (BORDER_WIDTH - 2), y + (sideStart - 1),
 		BORDER_WIDTH - 2, h - (sideStart + 2),
-		g, false, 1, &g.brush(QColorGroup::Background));
+		g, false, 1, &g.brush(TQColorGroup::Background));
 
 	p.setPen(g.dark());
 	p.drawLine(x2 - (BORDER_WIDTH - 1), sideStart, x2 - (BORDER_WIDTH - 1), h - sideStart);
@@ -1152,7 +1154,7 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 	qDrawShadePanel(&p,
 		x, y2 - (BORDER_WIDTH - 2),
 		w, (BORDER_WIDTH - 2),
-		g, false, 1, &g.brush(QColorGroup::Background));
+		g, false, 1, &g.brush(TQColorGroup::Background));
 	p.setPen(g.dark());
 	p.drawLine(x, y2 - (BORDER_WIDTH - 1), x2, y2 - (BORDER_WIDTH - 1));
 
@@ -1164,7 +1166,7 @@ void BlueCurveClient::paintEvent( QPaintEvent* )
 	bitBlt( widget(), 0, 0, titleBuffer );
 
 	// Draw an outer black frame
-	p.setPen(Qt::black);
+	p.setPen(TQt::black);
 	p.drawRect(0,0,w,h);
 
 	// Put on the bottom corners
@@ -1183,7 +1185,7 @@ void BlueCurveClient::shadeChange()
 void BlueCurveClient::doShape()
 {
 	// Obtain widget bounds.
-	QRect r(widget()->rect());
+	TQRect r(widget()->rect());
 	int x = 0;
 	int y = 0;
 	//int x2 = width() - 1;
@@ -1194,11 +1196,11 @@ void BlueCurveClient::doShape()
 	int rad = BUTTON_DIAM / 2;
 	int dm = BUTTON_DIAM;
 
-	QBitmap mask(w+1, h+1, true);
+	TQBitmap mask(w+1, h+1, true);
 
-	QPainter p(&mask);
+	TQPainter p(&mask);
 
-	p.fillRect(x, y, w+1, h+1, Qt::color1);
+	p.fillRect(x, y, w+1, h+1, TQt::color1);
 
 	p.eraseRect(x, y, rad, rad);
 	p.eraseRect(w-rad+1, 0, rad, rad);
@@ -1206,8 +1208,8 @@ void BlueCurveClient::doShape()
 	p.eraseRect(x, h-BOTTOM_CORNER, BOTTOM_CORNER, BOTTOM_CORNER);
 	p.eraseRect(w-BOTTOM_CORNER, h-BOTTOM_CORNER, BOTTOM_CORNER, BOTTOM_CORNER);
 
-	p.setPen(Qt::color1);
-	p.setBrush(Qt::color1);
+	p.setPen(TQt::color1);
+	p.setBrush(TQt::color1);
 
 	p.drawPie(x, y, dm, dm, 90*16, 90*16);
 	p.drawArc(x, y, dm, dm, 90*16, 90*16);
@@ -1222,19 +1224,19 @@ void BlueCurveClient::doShape()
 	p.fillRect(x+BOTTOM_CORNER, h - bottomLeftPix->height(),
 		bottomLeftPix->width()-BOTTOM_CORNER,
 		bottomLeftPix->height()-BOTTOM_CORNER,
-		Qt::color1);
+		TQt::color1);
 
 	p.fillRect(w-bottomRightPix->width(), h - bottomRightPix->height(), 
 		bottomRightPix->width()-BOTTOM_CORNER,
 		bottomRightPix->height()-BOTTOM_CORNER,
-		Qt::color1);
+		TQt::color1);
 
 	p.end();
 	setMask(mask);
 }
 
 
-void BlueCurveClient::showEvent(QShowEvent *)
+void BlueCurveClient::showEvent(TQShowEvent *)
 {
 	calcHiddenButtons();
 	doShape();
@@ -1242,7 +1244,7 @@ void BlueCurveClient::showEvent(QShowEvent *)
 }
 
 
-void BlueCurveClient::mouseDoubleClickEvent( QMouseEvent * e )
+void BlueCurveClient::mouseDoubleClickEvent( TQMouseEvent * e )
 {
 	if ( titlebar->geometry().contains( e->pos() ) )
 		titlebarDblClickOperation();
@@ -1275,13 +1277,13 @@ void BlueCurveClient::activeChange()
 }
 
 
-void BlueCurveClient::resize( const QSize& s )
+void BlueCurveClient::resize( const TQSize& s )
 {
 	widget()->resize( s );
 }
 
 
-QSize BlueCurveClient::minimumSize() const
+TQSize BlueCurveClient::minimumSize() const
 {
 	return widget()->minimumSize();
 }
@@ -1329,7 +1331,7 @@ void BlueCurveClient::calcHiddenButtons()
 }
 
 
-KDecoration::Position BlueCurveClient::mousePosition( const QPoint& p ) const
+KDecoration::Position BlueCurveClient::mousePosition( const TQPoint& p ) const
 {
 	Position m = PositionCenter;
 
@@ -1356,9 +1358,9 @@ KDecoration::Position BlueCurveClient::mousePosition( const QPoint& p ) const
 // Make sure the menu button follows double click conventions set in kcontrol
 void BlueCurveClient::menuButtonPressed()
 {
-	static QTime t;
+	static TQTime t;
 	static BlueCurveClient* lastClient = NULL;
-	bool dbl = ( lastClient == this && t.elapsed() <= QApplication::doubleClickInterval());
+	bool dbl = ( lastClient == this && t.elapsed() <= TQApplication::doubleClickInterval());
 	lastClient = this;
 	t.start();
 
@@ -1368,7 +1370,7 @@ void BlueCurveClient::menuButtonPressed()
 		return;
 	}
 
-	QPoint menupoint ( button[BtnMenu]->rect().bottomLeft().x()-1,
+	TQPoint menupoint ( button[BtnMenu]->rect().bottomLeft().x()-1,
 					button[BtnMenu]->rect().bottomLeft().y()+2 );
 	KDecorationFactory* f = factory();
 	showWindowMenu( button[BtnMenu]->mapToGlobal( menupoint ));
@@ -1386,27 +1388,27 @@ void BlueCurveClient::menuButtonReleased()
 }
 
 
-bool BlueCurveClient::eventFilter( QObject* o, QEvent* e )
+bool BlueCurveClient::eventFilter( TQObject* o, TQEvent* e )
 {
 	if ( o != widget() )
 		return false;
 
 	switch( e->type())
 	{
-		case QEvent::Resize:
-			resizeEvent(static_cast< QResizeEvent* >( e ) );
+		case TQEvent::Resize:
+			resizeEvent(static_cast< TQResizeEvent* >( e ) );
 			return true;
-		case QEvent::Paint:
-			paintEvent(static_cast< QPaintEvent* >( e ) );
+		case TQEvent::Paint:
+			paintEvent(static_cast< TQPaintEvent* >( e ) );
 			return true;
-		case QEvent::MouseButtonDblClick:
-			mouseDoubleClickEvent(static_cast< QMouseEvent* >( e ) );
+		case TQEvent::MouseButtonDblClick:
+			mouseDoubleClickEvent(static_cast< TQMouseEvent* >( e ) );
 			return true;
-		case QEvent::MouseButtonPress:
-			processMousePressEvent(static_cast< QMouseEvent* >( e ) );
+		case TQEvent::MouseButtonPress:
+			processMousePressEvent(static_cast< TQMouseEvent* >( e ) );
 			return true;
-		case QEvent::Show:
-			showEvent(static_cast<QShowEvent *>(e));
+		case TQEvent::Show:
+			showEvent(static_cast<TQShowEvent *>(e));
 			return true;
 		default:
 			break;

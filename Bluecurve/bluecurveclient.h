@@ -15,18 +15,18 @@
 #ifndef _BLUECURVE_H
 #define _BLUECURVE_H
 
-#include <qbutton.h>
-#include <qbitmap.h>
-#include <qdatetime.h>
+#include <tqbutton.h>
+#include <tqbitmap.h>
+#include <tqdatetime.h>
 #include <kpixmap.h>
 #include <kdecoration.h>
 #include <kdecorationfactory.h>
 
 
-class QSpacerItem;
-class QBoxLayout;
-class QGridLayout;
-class QHBoxLayout;
+class TQSpacerItem;
+class TQBoxLayout;
+class TQGridLayout;
+class TQHBoxLayout;
 
 namespace BlueCurve {
 
@@ -39,50 +39,50 @@ class BlueCurveHandler: public KDecorationFactory
 		~BlueCurveHandler();
 		KDecoration* createDecoration( KDecorationBridge* );
 		bool reset(unsigned long changed);
-		//virtual QValueList< BorderSize > borderSizes() const;
+		//virtual TQValueList< BorderSize > borderSizes() const;
 
 	private:
 		void readConfig();
 		void createPixmaps();
 		void freePixmaps();
 		void drawButtonBackground(KPixmap *pix, 
-			const QColorGroup &g,
+			const TQColorGroup &g,
 			bool sunken,
 			bool active);
-		void recolor( QImage &img, const QColor& color );
+		void recolor( TQImage &img, const TQColor& color );
 };
 
 enum ButtonPos { ButtonLeft = 0, ButtonMid, ButtonRight, LeftButtonRight };
 
-class BlueCurveButton : public QButton, public KDecorationDefines
+class BlueCurveButton : public TQButton, public KDecorationDefines
 {
 	public:
 		BlueCurveButton( BlueCurveClient *parent=0, const char *name=0,
 			bool largeButton=true, int pos=ButtonMid,
 			bool isOnAllDesktopsButton=false, const unsigned char *bitmap=NULL,
-			const QString& tip=NULL, const int realizeBtns=LeftButton );
+			const TQString& tip=NULL, const int realizeBtns=LeftButton );
 		~BlueCurveButton(); 
 
 		int last_button;
 		void turnOn( bool isOn );
 		void setBitmap(const unsigned char *bitmap);
-		void setTipText(const QString &tip);
-		QSize sizeHint() const;
+		void setTipText(const TQString &tip);
+		TQSize sizeHint() const;
 		void reset();
 		int pos;
 
 	protected:
-		void resizeEvent( QResizeEvent* e);
-		void showEvent(QShowEvent *ev);
+		void resizeEvent( TQResizeEvent* e);
+		void showEvent(TQShowEvent *ev);
 		void doShape();
-		void enterEvent(QEvent *);
-		void leaveEvent(QEvent *);
-		void mousePressEvent( QMouseEvent* e );
-		void mouseReleaseEvent( QMouseEvent* e );
-		void drawButton(QPainter *p);
-		void drawButtonLabel(QPainter*) {;}
+		void enterEvent(TQEvent *);
+		void leaveEvent(TQEvent *);
+		void mousePressEvent( TQMouseEvent* e );
+		void mouseReleaseEvent( TQMouseEvent* e );
+		void drawButton(TQPainter *p);
+		void drawButtonLabel(TQPainter*) {;}
 
-		QBitmap* deco;
+		TQBitmap* deco;
 		bool large;
 		bool isLeft;
 		bool isOnAllDesktops;
@@ -104,14 +104,14 @@ class BlueCurveClient : public KDecoration
 		virtual void init();
 
 	protected:
-		virtual void resizeEvent( QResizeEvent* );
-		virtual void paintEvent( QPaintEvent* );
-		virtual void showEvent( QShowEvent* );
-		virtual void mouseDoubleClickEvent( QMouseEvent * );
+		virtual void resizeEvent( TQResizeEvent* );
+		virtual void paintEvent( TQPaintEvent* );
+		virtual void showEvent( TQShowEvent* );
+		virtual void mouseDoubleClickEvent( TQMouseEvent * );
 
 		virtual void doShape();
 		virtual void borders( int&, int&, int&, int& ) const;
-		virtual void resize(const QSize&);
+		virtual void resize(const TQSize&);
 		virtual void captionChange();
 		virtual void maximizeChange();
 		virtual void shadeChange();
@@ -120,8 +120,8 @@ class BlueCurveClient : public KDecoration
 		virtual void activeChange();
 		virtual void iconChange();
 		virtual void desktopChange();
-		virtual QSize minimumSize() const;
-		virtual Position mousePosition(const QPoint &) const;
+		virtual TQSize minimumSize() const;
+		virtual Position mousePosition(const TQPoint &) const;
 
 	protected slots:
 		void slotMaximize();
@@ -129,9 +129,9 @@ class BlueCurveClient : public KDecoration
 		void menuButtonReleased();
 
 	private:
-		bool eventFilter( QObject* o, QEvent* e );
+		bool eventFilter( TQObject* o, TQEvent* e );
 		void calcHiddenButtons();
-		void addClientButtons( const QString& s, bool isLeft=true );
+		void addClientButtons( const TQString& s, bool isLeft=true );
 
 		enum Buttons{ BtnHelp=0, BtnMax, BtnIconify, BtnClose,
 			BtnMenu, BtnOnAllDesktops, BtnCount };
@@ -140,10 +140,10 @@ class BlueCurveClient : public KDecoration
 		int           lastButtonWidth;
 		int           titleHeight;
 		bool          largeButtons;
-		QGridLayout*  g;
-		QHBoxLayout*  hb;
-		QSpacerItem*  titlebar;
-		QSpacerItem*  spacer;
+		TQGridLayout*  g;
+		TQHBoxLayout*  hb;
+		TQSpacerItem*  titlebar;
+		TQSpacerItem*  spacer;
 		bool          m_closing;
 };
 
