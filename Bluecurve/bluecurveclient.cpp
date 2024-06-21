@@ -16,12 +16,12 @@
 
 #include "bluecurveclient.h"
 
-#include <kconfig.h>
-#include <kglobal.h>
+#include <tdeconfig.h>
+#include <tdeglobal.h>
 #include <kpixmapeffect.h>
 #include <kimageeffect.h>
 #include <kdrawutil.h>
-#include <klocale.h>
+#include <tdelocale.h>
 #include <tqlayout.h>
 #include <tqdrawutil.h>
 #include <tqbitmap.h>
@@ -123,7 +123,7 @@ bool BlueCurveHandler::reset(unsigned long changed)
 
 void BlueCurveHandler::readConfig()
 {
-	KConfig* conf = KGlobal::config();
+	TDEConfig* conf = TDEGlobal::config();
 	conf->setGroup("BlueCurve");
 
 	showGrabBar = conf->readBoolEntry("ShowGrabBar", true);
