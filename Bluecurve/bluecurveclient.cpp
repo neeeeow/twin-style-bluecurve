@@ -719,10 +719,10 @@ void BlueCurveClient::addClientButtons( const TQString& s, bool isLeft )
 					{
 						button[BtnMenu] = new BlueCurveButton(this, "menu",
 							largeButtons, pos, false, menu_bits, i18n("Menu"), LeftButton|RightButton);
-						connect( button[BtnMenu], SIGNAL(pressed()),
-							this, SLOT(menuButtonPressed()) );
-						connect( button[BtnMenu], SIGNAL(released()),
-							this, SLOT(menuButtonReleased()));
+						connect( button[BtnMenu], TQ_SIGNAL(pressed()),
+							this, TQ_SLOT(menuButtonPressed()) );
+						connect( button[BtnMenu], TQ_SIGNAL(released()),
+							this, TQ_SLOT(menuButtonReleased()));
 						if (! first_button)
 							hb->addSpacing(2);
 						else
@@ -739,8 +739,8 @@ void BlueCurveClient::addClientButtons( const TQString& s, bool isLeft )
 						button[BtnOnAllDesktops] = new BlueCurveButton(this, "on_all_desktops", 
 							largeButtons, pos, true, NULL, i18n("On All Desktops"));
 						button[BtnOnAllDesktops]->turnOn( isOnAllDesktops() );
-						connect( button[BtnOnAllDesktops], SIGNAL(clicked()), 
-							this, SLOT(toggleOnAllDesktops()) );
+						connect( button[BtnOnAllDesktops], TQ_SIGNAL(clicked()), 
+							this, TQ_SLOT(toggleOnAllDesktops()) );
 						hb->addSpacing(2);
 						hb->addWidget( button[BtnOnAllDesktops] );
 						last_button = button[BtnOnAllDesktops];
@@ -754,8 +754,8 @@ void BlueCurveClient::addClientButtons( const TQString& s, bool isLeft )
 						button[BtnHelp] = new BlueCurveButton(this, "help",
 							largeButtons, pos, true, question_bits,
 							i18n("Help"));
-						connect( button[BtnHelp], SIGNAL( clicked() ),
-							this, SLOT( contextHelp() ));
+						connect( button[BtnHelp], TQ_SIGNAL( clicked() ),
+							this, TQ_SLOT( contextHelp() ));
 						if (! first_button)
 							hb->addSpacing(2);
 						else
@@ -772,8 +772,8 @@ void BlueCurveClient::addClientButtons( const TQString& s, bool isLeft )
 						button[BtnIconify] = new BlueCurveButton(this, "iconify",
 							largeButtons, pos, false, iconify_bits,
 							i18n("Minimize"));
-						connect( button[BtnIconify], SIGNAL( clicked()),
-							this, SLOT(minimize()) );
+						connect( button[BtnIconify], TQ_SIGNAL( clicked()),
+							this, TQ_SLOT(minimize()) );
 						if (! first_button)
 							hb->addSpacing(2);
 						else
@@ -790,8 +790,8 @@ void BlueCurveClient::addClientButtons( const TQString& s, bool isLeft )
 					button[BtnMax]  = new BlueCurveButton(this, "maximize",
 						largeButtons, pos, false, maximize_bits,
 						i18n("Maximize"), LeftButton|MidButton|RightButton);
-					connect( button[BtnMax], SIGNAL( clicked()),
-						this, SLOT(slotMaximize()) );
+					connect( button[BtnMax], TQ_SIGNAL( clicked()),
+						this, TQ_SLOT(slotMaximize()) );
 					if (! first_button)
 						hb->addSpacing(2);
 					else
@@ -808,8 +808,8 @@ void BlueCurveClient::addClientButtons( const TQString& s, bool isLeft )
 					button[BtnClose] = new BlueCurveButton(this, "close",
 						largeButtons, pos, false, close_bits,
 						i18n("Close"));
-					connect( button[BtnClose], SIGNAL( clicked()),
-						this, SLOT(closeWindow()) );
+					connect( button[BtnClose], TQ_SIGNAL( clicked()),
+						this, TQ_SLOT(closeWindow()) );
 					if (! first_button)
 						hb->addSpacing(2);
 					else

@@ -95,7 +95,7 @@ class BlueCurveButton : public TQButton, public KDecorationDefines
 
 class BlueCurveClient : public KDecoration
 {
-	Q_OBJECT
+	TQ_OBJECT
 
 	public:
 		BlueCurveClient( KDecorationBridge* bridge, KDecorationFactory* factory );
