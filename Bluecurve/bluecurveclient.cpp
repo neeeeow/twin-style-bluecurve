@@ -308,8 +308,8 @@ void BlueCurveHandler::recolor( TQImage &img, const TQColor& color )
 	int hue = -1, sat = 0, val = 228;
 	if ( color.isValid() )
 		color.hsv( &hue, &sat, &val );
-	register int pixels = (img.depth() > 8 ? img.width() * img.height() : img.numColors());
-	register TQ_UINT32* data = ( img.depth() > 8 ? reinterpret_cast< TQ_UINT32* >( img.bits() ) :
+	int pixels = (img.depth() > 8 ? img.width() * img.height() : img.numColors());
+	TQ_UINT32* data = ( img.depth() > 8 ? reinterpret_cast< TQ_UINT32* >( img.bits() ) :
 		reinterpret_cast< TQ_UINT32* >( img.colorTable() ) );
 	
 	for ( int i = 0; i < pixels; i++ )
